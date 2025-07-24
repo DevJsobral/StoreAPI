@@ -1,0 +1,66 @@
+<div class="modal-backdrop">
+  <div class="modal-dialog">
+    <div class="modal-content p-4">
+      <div *ngIf="uploading" class="loading-overlay">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+
+      <div class="modal-header">
+        <h5 class="modal-title">New Product</h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="close()"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="productName" class="form-label">Name</label>
+          <input id="productName" type="text" class="form-control" [(ngModel)]="name" />
+        </div>
+
+        <div class="mb-3">
+          <label for="productDescription" class="form-label">Description</label>
+          <textarea id="productDescription" class="form-control" [(ngModel)]="description"></textarea>
+        </div>
+
+        <div class="mb-3">
+          <label for="productPrice" class="form-label">Price</label>
+          <input id="productPrice" type="number" class="form-control" [(ngModel)]="price" />
+        </div>
+
+        <div class="mb-3">
+          <label for="productStock" class="form-label">Stock</label>
+          <input id="productStock" type="number" class="form-control" [(ngModel)]="stock" />
+        </div>
+
+        <div class="mb-3">
+          <label for="productCategory" class="form-label">Category</label>
+          <select id="productCategory" class="form-select" [(ngModel)]="categoryId">
+            <option *ngFor="let cat of categories" [value]="cat.categoryId">{{ cat.name }}</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Image</label>
+          <input type="file" accept="image/*" (change)="onFileSelected($event)" class="form-control" />
+        </div>
+
+        <div *ngIf="imagePreview" class="mb-3 text-center">
+          <img [src]="imagePreview" alt="Image preview" class="img-thumbnail" style="max-height: 180px;" />
+        </div>
+
+        <div *ngIf="errorMsg" class="alert alert-danger">
+          {{ errorMsg }}
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary me-2" (click)="save()" [disabled]="uploading">Create</button>
+        <button type="button" class="btn btn-secondary" (click)="close()" [disabled]="uploading">Cancel</button>
+      </div>
+    </div>
+    <div *ngIf="errorMsg" style="color: red; margin-top: 10px;">
+      {{ errorMsg }}
+    </div>
+  </div>
+</div>

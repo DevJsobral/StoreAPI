@@ -1,0 +1,29 @@
+<div class="modal-backdrop">
+  <div class="modal-content p-4 rounded bg-white shadow-lg" style="width: 400px; margin: auto; margin-top: 100px;">
+    <h4 class="mb-3">Update Price & Stock</h4>
+
+    <div class="mb-3">
+      <label class="form-label">Product</label>
+      <input class="form-control" [value]="product.name" disabled>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">New Price</label>
+      <input type="number" class="form-control" [(ngModel)]="newPrice">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">New Stock</label>
+      <input type="number" class="form-control" [(ngModel)]="newStock">
+    </div>
+
+    <div class="text-end mt-3">
+      <button class="btn btn-secondary me-2" (click)="close()">Cancel</button>
+      <button class="btn btn-primary" (click)="save()" [disabled]="updating">Update</button>
+    </div>
+
+    <div *ngIf="errorMessage" style="color: red; margin-top: 10px;">
+      {{ errorMessage }}
+    </div>
+  </div>
+</div>

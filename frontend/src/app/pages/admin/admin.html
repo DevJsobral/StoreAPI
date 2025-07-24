@@ -1,0 +1,169 @@
+<div
+  class="d-flex justify-content-between align-items-center px-4 py-4 bg-dark text-white border-bottom border-4 border-info"
+  id="header">
+  <a routerLink="/products" style="text-decoration: none;">
+    <h2 class="text-info" id="LogoName" style="cursor: pointer;">StoreAPI</h2>
+  </a>
+  <div>
+    <button class="btn btn-outline-light btn-sm me-2" (click)="goToCart()">
+      <i class="bi bi-cart"></i>
+    </button>
+
+    <button *ngIf="isLoggedIn" class="btn btn-outline-warning btn-sm" (click)="logout()">
+      <i class="bi bi-box-arrow-right"></i> Logout
+    </button>
+  </div>
+</div>
+
+<div class="container-fluid p-4">
+  <h2 class="mb-4">Admin Area</h2>
+  <!-- Menu Tabs -->
+  <ul class="nav nav-tabs mb-3">
+    <li class="nav-item">
+      <button class="nav-link" [class.active]="activeTab === 'products'" (click)="selectTab('products')">
+        Products
+      </button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" [class.active]="activeTab === 'categories'" (click)="selectTab('categories')">
+        Categories
+      </button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" [class.active]="activeTab === 'orders'" (click)="selectTab('orders')">
+        Orders
+      </button>
+    </li>
+  </ul>
+
+  <!-- Action Buttons -->
+  <div class="mb-3 d-flex justify-content-end">
+    <!-- Show 'New Product' only on Products tab -->
+    <button *ngIf="activeTab === 'products'" class="btn btn-primary" (click)="openNewProductModal()">
+      New Product
+    </button>
+
+    <!-- Show 'New Category' only on Categories tab -->
+    <button *ngIf="activeTab === 'categories'" class="btn btn-primary" (click)="openNewCategoryModal()">
+      New Category
+    </button>
+  </div>
+
+  <!-- Tables -->
+  <!-- Products Table -->
+  <div *ngIf="activeTab === 'products' && categories.length > 0">
+    <table class="table table-striped table-bordered">
+      <thead class="table-dark">
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Category</th>
+          <th>Price</th>
+          <th>Stock</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let product of products">
+          <td>{{ product.name }}</td>
+          <td>{{ product.description }}</td>
+          <td>{{ getCategoryName(product.categoryId) }}</td>
+          <td>{{ product.price | currency:'USD' }}</td>
+          <td>{{ product.stock }}</td>
+          <td>
+            <button class="btn btn-sm btn-warning me-1" (click)="openEditProductModal(product)" title="Edit Product">
+              Edit
+            </button>
+            <button class="btn btn-sm btn-info me-1" (click)="openPatchProductModal(product)"
+              title="Update Price/Stock">
+              Update Price/Stock
+            </button>
+            <button class="btn btn-sm btn-danger" (click)="deleteProduct(product.productId)" title="Delete Product">
+              Delete
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <app-edit-product-modal *ngIf="editingProduct" [product]="editingProduct" [categories]="categories"
+    (onClose)="closeEditProductModal()" (onSave)="onProductSaved($event)">
+  </app-edit-product-modal>
+  <app-new-product-modal *ngIf="creatingProduct" [categories]="categories" (onClose)="closeNewProductModal()"
+    (onCreate)="onProductCreated($event)">
+  </app-new-product-modal>
+  <app-patch-product-modal *ngIf="patchingProduct" [product]="patchingProduct" (onClose)="closePatchProductModal()"
+    (onPatched)="onProductPatched($event)">
+  </app-patch-product-modal>
+
+  <!-- Categories Table -->
+  <div *ngIf="activeTab === 'categories'">
+    <table class="table table-striped table-bordered">
+      <thead class="table-dark">
+        <tr>
+          <th>Name</th>
+          <th>Image URL</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let category of categories">
+          <td>{{ category.name }}</td>
+          <td>
+            <a [href]="category.imageURL" target="_blank">View Image</a>
+          </td>
+          <td>
+            <button class="btn btn-sm btn-warning me-1" (click)="openEditCategoryModal(category)" title="Edit Category">
+              Edit
+            </button>
+            <button class="btn btn-sm btn-danger" (click)="deleteCategory(category.categoryId)" title="Delete Category">
+              Delete
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <app-edit-category-modal *ngIf="editingCategory" [categoryId]="editingCategory.categoryId"
+    [categoryName]="editingCategory.name" [categoryImageUrl]="editingCategory.imageURL"
+    (editClose)="handleEditClose($event)"></app-edit-category-modal>
+  <app-new-category-modal *ngIf="creatingCategory" (createClose)="handleNewCategoryClose($event)">
+  </app-new-category-modal>
+
+  <!-- Orders Table -->
+  <div *ngIf="activeTab === 'orders'">
+    <table class="table table-striped table-bordered">
+      <thead class="table-dark">
+        <tr>
+          <th>Order ID</th>
+          <th>Products</th>
+          <th>Total Amount</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let order of orders">
+          <td>{{ order.orderId }}</td>
+          <td>
+            <ul>
+              <li *ngFor="let item of order.items">
+                {{ item.productName }} - Quantity: {{ item.quantity }} - Unit Price: {{ item.price | currency:'USD' }}
+              </li>
+            </ul>
+          </td>
+          <td>{{ order.total | currency:'USD' }}</td>
+          <td class="text-center align-middle">
+            <button class="btn btn-sm btn-danger" (click)="deleteOrder(order.orderId)" title="Delete Order">
+              Delete
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <app-confirm-modal #confirmModal (confirm)="onConfirmed($event)"></app-confirm-modal>
+  <!-- Modal placeholders -->
+  <!-- Modals will be inserted here dynamically -->
+
+</div>

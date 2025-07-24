@@ -1,0 +1,47 @@
+<div class="modal-backdrop">
+  <div class="modal-dialog">
+    <div class="modal-content p-4">
+      <div *ngIf="uploading" class="loading-overlay">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Category</h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="close()"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="categoryName" class="form-label">Name</label>
+          <input type="text" id="categoryName" class="form-control" [(ngModel)]="name" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Image</label>
+          <input type="file" accept="image/*" (change)="onFileSelected($event)" class="form-control" />
+        </div>
+
+        <div *ngIf="imagePreview" class="mb-3 text-center">
+          <img [src]="imagePreview" alt="Preview da Imagem" class="img-thumbnail" style="max-height: 180px;" />
+        </div>
+
+        <div *ngIf="errorMsg" class="alert alert-danger">
+          {{ errorMsg }}
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary me-2" (click)="save()" [disabled]="uploading">
+          Save
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="close()" [disabled]="uploading">
+          Cancel
+        </button>
+      </div>
+    </div>
+      <div *ngIf="errorMsg" style="color: red; margin-top: 10px;">
+      {{ errorMsg }}
+    </div>
+  </div>
+</div>

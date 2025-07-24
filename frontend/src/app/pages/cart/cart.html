@@ -1,0 +1,92 @@
+<div class="d-flex flex-column" style="min-height: 100vh;">
+
+  <!-- Header -->
+  <div
+    class="d-flex justify-content-between align-items-center px-4 py-4 bg-dark text-white border-bottom border-4 border-info"
+    id="header">
+    <h2 class="text-info" id="LogoName" (click)="goToProducts()" style="cursor:pointer">StoreAPI</h2>
+    <div>
+      <button class="btn btn-outline-light btn-sm me-2" (click)="goToProducts()">
+        <i class="bi bi-box"></i> Products
+      </button>
+    </div>
+  </div>
+
+  <!-- Área principal: sidebar + conteúdo -->
+   <div class="d-flex flex-grow-1">
+
+    <!-- Sidebar -->
+    <nav class="bg-dark text-white p-3" style="width: 220px;">
+      <ul class="nav flex-column mt-4">
+        <li class="nav-item">
+          <a class="nav-link text-white" href="#"><i class="bi bi-box"></i> Products</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="#" (click)="goToAdmin()"><i class="bi bi-tools"></i> Admin Page</a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Conteúdo principal -->
+    <div class="flex-grow-1 p-4">
+
+      <h3 class="mb-4">Your Cart</h3>
+
+      <div *ngIf="cartItems.length > 0; else emptyCart">
+        <!-- Container da tabela centralizado -->
+        <div style="max-width: 850px; margin: 0 auto;">
+          <table class="table table-striped text-center align-middle">
+            <thead class="table-dark">
+              <tr>
+                <th>Product</th>
+                <th>Qty</th>
+                <th>Price</th>
+                <th>Total</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of cartItems">
+                <ng-container *ngIf="productsMap.get(item.productId) as product; else loading">
+                  <td class="text-start">
+                    <img *ngIf="product.imageURL" [src]="product.imageURL" [alt]="product.name"
+                      style="width: 60px; height: 60px; object-fit: cover; margin-right: 10px;" />
+                    {{ product.name }}
+                  </td>
+                  <td>
+                    <input type="number" min="1"
+                      class="form-control form-control-sm mx-auto"
+                      style="max-width: 70px;"
+                      [value]="item.quantity"
+                      (change)="changeQuantity(item, $event)">
+                  </td>
+                  <td>R$ {{ (product.price ?? 0).toFixed(2) }}</td>
+                  <td>R$ {{ ((product.price ?? 0) * item.quantity).toFixed(2) }}</td>
+                  <td>
+                    <button class="btn btn-sm btn-danger" (click)="removeItem(item.productId)">
+                      <i class="bi bi-trash"></i> Remove
+                    </button>
+                  </td>
+                </ng-container>
+                <ng-template #loading>
+                  <td colspan="5" class="text-center">Loading product data...</td>
+                </ng-template>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="d-flex justify-content-between align-items-center mt-4">
+            <h4 class="m-0">Total: R$ {{ total() | number:'1.2-2' }}</h4>
+            <button class="btn btn-success" (click)="placeOrder()">Place Order</button>
+          </div>
+        </div>
+      </div>
+
+      <ng-template #emptyCart>
+        <p>Your cart is empty.</p>
+      </ng-template>
+    </div>
+  </div>
+<app-info-modal #infoModal (closed)="onModalClosed()"></app-info-modal>
+</div>
+

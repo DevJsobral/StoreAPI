@@ -1,0 +1,8 @@
+<div *ngIf="visible" class="modal-backdrop d-flex justify-content-center align-items-center">
+  <div class="modal-box bg-dark text-white rounded p-4 shadow" style="max-width: 400px; text-align: center;">
+    <h5 class="mb-3">{{ message }}</h5>
+    <div class="d-flex justify-content-center gap-3 mt-4">
+      <button class="btn btn-success" (click)="close()">OK</button>
+    </div>
+  </div>
+</div>
