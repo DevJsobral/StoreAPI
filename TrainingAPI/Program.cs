@@ -15,6 +15,12 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(int.Parse(port));
+});
+
 builder.Services.AddControllers(options =>
 {
     options.Filters.Add<ApiExceptionFilter>();
@@ -118,16 +124,14 @@ builder.Logging.AddConsole();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "TrainingAPI v1");
-        c.RoutePrefix = string.Empty;
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "TrainingAPI v1");
+    c.RoutePrefix = string.Empty;
 
-    });
-}
+});
+
 
 app.UseCors("MyCors");
 app.UseAuthentication();
