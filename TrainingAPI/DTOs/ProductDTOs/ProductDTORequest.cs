@@ -37,6 +37,10 @@ namespace TrainingAPI.DTOs
         [Range(1, 10000, ErrorMessage = "Price must be beetween 1 and 10.000.")]
         public decimal Price { get; set; }
 
+        [Required(ErrorMessage = "Stock can't be null")]
+        [Range(1, 50000, ErrorMessage = "Stock must be beetween 1 and 50.000.")]
+        public int Stock { get; set; }
+
         /// <summary>
         /// Gets or sets the URL of the product image.
         /// Required.

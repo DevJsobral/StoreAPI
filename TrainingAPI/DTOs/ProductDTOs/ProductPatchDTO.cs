@@ -25,6 +25,6 @@ namespace TrainingAPI.DTOs
         /// Must be between 1 and 10,000.
         /// </summary>
         [Range(1, 10000, ErrorMessage = "Stock must be between 1 and 10,000.")]
-        public float Stock { get; set; }
+        public int Stock { get; set; }
     }
 }

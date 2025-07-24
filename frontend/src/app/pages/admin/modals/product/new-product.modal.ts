@@ -3,6 +3,7 @@ import { ProductsService, Product } from '../../../../services/products.service'
 import { Category } from '../../../../services/categories.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { ImageUploadService } from '../../../../services/image-upload.service';
 
 @Component({
   selector: 'app-new-product-modal',
@@ -27,7 +28,9 @@ export class NewProductModalComponent {
   uploading = false;
   errorMsg = '';
 
-  constructor(private productsService: ProductsService) { }
+  constructor(private productsService: ProductsService,
+    private imageUploadService: ImageUploadService
+  ) { }
 
   onFileSelected(event: any) {
     const file: File = event.target.files[0];
@@ -41,10 +44,8 @@ export class NewProductModalComponent {
       reader.readAsDataURL(file);
     }
   }
-
   save() {
     this.errorMsg = '';
-
     if (this.uploading) return;
 
     if (!this.name.trim()) {
@@ -66,17 +67,33 @@ export class NewProductModalComponent {
 
     this.uploading = true;
 
-    const formData = new FormData();
-    formData.append('name', this.name);
-    formData.append('description', this.description || '');
-    formData.append('price', this.price.toString());
-    formData.append('stock', this.stock.toString());
-    formData.append('categoryId', this.categoryId.toString());
     if (this.selectedFile) {
-      formData.append('image', this.selectedFile);
+      this.imageUploadService.uploadImage(this.selectedFile).subscribe({
+        next: (imageUrl: string) => {
+          this.createProduct(imageUrl);
+        },
+        error: () => {
+          this.uploading = false;
+          this.errorMsg = 'Error uploading image.';
+        }
+      });
+    } else {
+      this.createProduct('');
     }
+  }
 
-    this.productsService.create(formData as any).subscribe({
+  private createProduct(imageUrl: string) {
+    const newProduct: Product = {
+      productId: 0,
+      name: this.name.trim(),
+      description: this.description || '',
+      price: this.price!,
+      stock: this.stock!,
+      categoryId: this.categoryId!,
+      imageURL: imageUrl
+    };
+
+    this.productsService.create(newProduct).subscribe({
       next: createdProduct => {
         this.uploading = false;
         this.onCreate.emit(createdProduct);
@@ -84,7 +101,6 @@ export class NewProductModalComponent {
       },
       error: err => {
         this.uploading = false;
-
         if (err.status === 400 && err.error?.errors) {
           const errors = err.error.errors as { [key: string]: string[] };
           this.errorMsg = Object.values(errors)

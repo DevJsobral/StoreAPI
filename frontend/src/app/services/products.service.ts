@@ -17,7 +17,7 @@ export interface Product {
   providedIn: 'root'
 })
 export class ProductsService {
-  private apiUrl = 'http://localhost:5216/api/Products';
+  private apiUrl = 'https://storeapi-0ysq.onrender.com/api/Products';
 
   private httpOptions = {
     headers: new HttpHeaders({

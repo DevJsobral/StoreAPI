@@ -35,7 +35,7 @@ export interface OrderResponse {
   providedIn: 'root'
 })
 export class OrdersService {
-  private apiUrl = 'http://localhost:5216/api/Orders';
+  private apiUrl = 'https://storeapi-0ysq.onrender.com/api/Orders';
 
   private httpOptions = {
     headers: new HttpHeaders({

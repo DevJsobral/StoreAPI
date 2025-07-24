@@ -13,7 +13,7 @@ export interface Category {
   providedIn: 'root'
 })
 export class CategoriesService {
-  private apiUrl = 'http://localhost:5216/api/Categories';
+  private apiUrl = 'https://storeapi-0ysq.onrender.com/api/Categories';
 
   private httpOptions = {
     headers: new HttpHeaders({
