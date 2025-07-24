@@ -1,0 +1,23 @@
+# Ignore pastas bin e obj do .NET
+**/bin/
+**/obj/
+
+# Ignore node_modules do Angular
+frontend/node_modules/
+
+# Ignore dist (build output do Angular)
+frontend/dist/
+
+# Arquivos de usuário do Visual Studio
+*.user
+*.suo
+
+# Pastas do Visual Studio e VS Code
+.vs/
+.vscode/
+
+# Arquivos de ambiente
+.env
+
+# Logs
+*.log
