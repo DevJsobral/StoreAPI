@@ -2,43 +2,59 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using TrainingAPI.Models;
 
-namespace TrainingAPI.Context;
-
-public class TrainingAPIContext : IdentityDbContext<User>
+namespace TrainingAPI.Context
 {
-    public TrainingAPIContext(DbContextOptions<TrainingAPIContext> options) : base(options)
-    { }
-
-    public DbSet<Product>? Products { get; set; }
-    public DbSet<Category>? Categories { get; set; }
-    public DbSet<Order> Orders { get; set; }
-    public DbSet<OrderItem> OrderItems { get; set; }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    public class TrainingAPIContext : IdentityDbContext<User>
     {
-        base.OnModelCreating(modelBuilder);
+        public TrainingAPIContext(DbContextOptions<TrainingAPIContext> options) : base(options)
+        { }
 
-        modelBuilder.Entity<Category>()
-            .HasIndex(c => c.Name)
-            .IsUnique();
+        public DbSet<Product>? Products { get; set; }
+        public DbSet<Category>? Categories { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
 
-        modelBuilder.Entity<Product>()
-            .HasIndex(p => p.Name)
-            .IsUnique();
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<OrderItem>()
-            .HasOne(oi => oi.Product)
-            .WithMany()
-            .HasForeignKey(oi => oi.ProductId);
+            foreach (var entity in modelBuilder.Model.GetEntityTypes())
+            {
+                var currentTableName = entity.GetTableName();
+                if (currentTableName != null)
+                {
+                    entity.SetTableName(currentTableName.ToLower());
+                }
 
-        modelBuilder.Entity<OrderItem>()
-            .HasOne(oi => oi.Order)
-            .WithMany(o => o.Items)
-            .HasForeignKey(oi => oi.OrderId);
+                var schema = entity.GetSchema();
+                if (schema != null)
+                {
+                    entity.SetSchema(schema.ToLower());
+                }
+            }
 
+            modelBuilder.Entity<Category>()
+                .HasIndex(c => c.Name)
+                .IsUnique();
+
+            modelBuilder.Entity<Product>()
+                .HasIndex(p => p.Name)
+                .IsUnique();
+
+            modelBuilder.Entity<OrderItem>()
+                .HasOne(oi => oi.Product)
+                .WithMany()
+                .HasForeignKey(oi => oi.ProductId);
+
+            modelBuilder.Entity<OrderItem>()
+                .HasOne(oi => oi.Order)
+                .WithMany(o => o.Items)
+                .HasForeignKey(oi => oi.OrderId);
+        }
     }
 }
