@@ -84,10 +84,15 @@ public class ProductsController : ControllerBase
     [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult> Get(int id)
+    public async Task<ActionResult<ProductDTOResponse>> Get(int id)
     {
+        if(id <= 0)
+            return BadRequest("Product Id should be bigger than 0");
+
         var product = await _uof.ProductsRepository.GetAsync(p => p.ProductId == id);
+
         if (product is null)
             return NotFound($"Product with the id = {id} was not found.");
 
@@ -112,12 +117,12 @@ public class ProductsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult> Post(ProductDTORequest productDTO)
+    public async Task<ActionResult<ProductDTOResponse>> Post(ProductDTORequest productDTO)
     {
         if (productDTO == null)
             return BadRequest("Invalid data.");
 
-        if (!ModelState.IsValid || !TryValidateModel(productDTO))
+        if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
         var productToCreate = _mapper.Map<Product>(productDTO);
@@ -185,7 +190,7 @@ public class ProductsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult> Put(int id, PutProductDTORequest productDTO)
+    public async Task<ActionResult<ProductDTOResponse>> Put(int id, PutProductDTORequest productDTO)
     {
         if (productDTO == null)
             return BadRequest("Invalid data.");
@@ -193,7 +198,7 @@ public class ProductsController : ControllerBase
         if (id != productDTO.ProductId)
             return BadRequest("The product you're looking for to update must have the same ID you're requesting");
 
-        if (!ModelState.IsValid || !TryValidateModel(productDTO))
+        if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
         var productToUpdate = _mapper.Map<Product>(productDTO);
