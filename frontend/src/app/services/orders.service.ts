@@ -35,7 +35,7 @@ export interface OrderResponse {
   providedIn: 'root'
 })
 export class OrdersService {
-  private apiUrl = 'https://storeapi-0ysq.onrender.com/api/Orders';
+  private apiUrl = 'http://localhost:8080/api/Orders';
 
   private httpOptions = {
     headers: new HttpHeaders({
@@ -51,7 +51,7 @@ export class OrdersService {
       Authorization: `Bearer ${token || ''}`
     });
 
-    return this.http.get<OrderResponseWithDetails[]>(`${this.apiUrl}/GetAllOrders`, { headers });
+    return this.http.get<OrderResponseWithDetails[]>(`${this.apiUrl}/GetAll`, { headers });
   }
 
   getById(id: number): Observable<OrderResponse> {
@@ -59,7 +59,7 @@ export class OrdersService {
   }
 
   create(order: OrderRequest): Observable<OrderResponse> {
-    return this.http.post<OrderResponse>(`${this.apiUrl}/CreateOrder`, order, this.httpOptions);
+    return this.http.post<OrderResponse>(`${this.apiUrl}/Post`, order, this.httpOptions);
   }
 
   delete(id: number): Observable<void> {

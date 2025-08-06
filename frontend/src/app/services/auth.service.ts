@@ -17,7 +17,7 @@ export interface LoginResponse {
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'https://storeapi-0ysq.onrender.com/api/Auth';
+  private apiUrl = 'http://storeapi-0ysq.onrender.com/api/Auth';
 
   private httpOptions = {
     headers: new HttpHeaders({
