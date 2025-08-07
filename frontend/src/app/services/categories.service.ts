@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface Category {
-  categoryId: number;
+  id: number;
   name: string;
   imageURL: string;
   registerDate?: string;
@@ -13,7 +13,7 @@ export interface Category {
   providedIn: 'root'
 })
 export class CategoriesService {
-  private apiUrl = 'http://localhost:8080/api/Categories';
+  private apiUrl = 'https://storeapi-javaapp-zoy2d.ondigitalocean.app/api/Categories';
 
   private httpOptions = {
     headers: new HttpHeaders({

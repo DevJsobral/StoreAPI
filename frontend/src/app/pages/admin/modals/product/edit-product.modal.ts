@@ -93,7 +93,7 @@ export class EditProductModalComponent implements OnInit {
       imageURL: imageUrl
     };
 
-    this.productsService.update(this.product.productId, productToUpdate).subscribe({
+    this.productsService.update(this.product.id, productToUpdate).subscribe({
       next: updatedProduct => {
         this.uploading = false;
         this.onSave.emit(updatedProduct);

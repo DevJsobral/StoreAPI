@@ -52,7 +52,7 @@ export class NewCategoryModalComponent {
     this.imageUploadService.uploadImage(this.imageFile).subscribe({
       next: (imageUrl) => {
         const newCategory: Category = {
-          categoryId: 0,
+          id: 0,
           name: this.name,
           imageURL: imageUrl
         };

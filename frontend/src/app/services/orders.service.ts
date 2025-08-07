@@ -9,23 +9,29 @@ export interface OrderItemDetails {
 }
 
 export interface OrderResponseWithDetails {
-  orderId: number;
+  id: number;
   items: OrderItemDetails[];
   total: number;
   createdAt: string;
 }
+
 export interface OrderItem {
+  id: number;
+  quantity: number;
+}
+
+export interface OrderItemRequest {
   productId: number;
   quantity: number;
 }
 
 export interface OrderRequest {
-  items: OrderItem[];
+  items: OrderItemRequest[];
   total?: number;
 }
 
 export interface OrderResponse {
-  orderId: number;
+  id: number;
   items: OrderItem[];
   total: number;
   orderDate?: string;
@@ -35,7 +41,7 @@ export interface OrderResponse {
   providedIn: 'root'
 })
 export class OrdersService {
-  private apiUrl = 'http://localhost:8080/api/Orders';
+  private apiUrl = 'https://storeapi-javaapp-zoy2d.ondigitalocean.app/api/Orders';
 
   private httpOptions = {
     headers: new HttpHeaders({
@@ -68,6 +74,6 @@ export class OrdersService {
       Authorization: `Bearer ${token || ''}`
     });
 
-    return this.http.delete<void>(`${this.apiUrl}/${id}`, {headers});
+    return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers });
   }
 }

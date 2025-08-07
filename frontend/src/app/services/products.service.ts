@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { catchError, of } from 'rxjs';
 
 export interface Product {
-  productId: number;
+  id: number;
   name: string;
   description: string;
   price: number;
@@ -17,7 +18,7 @@ export interface Product {
   providedIn: 'root'
 })
 export class ProductsService {
-  private apiUrl = 'http://localhost:8080/api/Products';
+  private apiUrl = 'https://storeapi-javaapp-zoy2d.ondigitalocean.app/api/Products';
 
   private httpOptions = {
     headers: new HttpHeaders({
@@ -28,11 +29,12 @@ export class ProductsService {
   constructor(private http: HttpClient) { }
 
   getAll(name?: string, categoryId?: number): Observable<Product[]> {
-    let params = new HttpParams();
-    if (name) params = params.set('name', name);
-    if (categoryId) params = params.set('categoryId', categoryId.toString());
+  let params = new HttpParams();
+  if (name) params = params.set('name', name);
+  if (categoryId) params = params.set('categoryId', categoryId.toString());
 
-    return this.http.get<Product[]>(`${this.apiUrl}/GetAll`, { params });
+  return this.http.get<Product[]>(`${this.apiUrl}/GetAll`, { params })
+
   }
 
   getById(id: number): Observable<Product> {

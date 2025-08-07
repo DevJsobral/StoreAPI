@@ -47,7 +47,7 @@
             </thead>
             <tbody>
               <tr *ngFor="let item of cartItems">
-                <ng-container *ngIf="productsMap.get(item.productId) as product; else loading">
+                <ng-container *ngIf="productsMap.get(item.id) as product; else loading">
                   <td class="text-start">
                     <img *ngIf="product.imageURL" [src]="product.imageURL" [alt]="product.name"
                       style="width: 60px; height: 60px; object-fit: cover; margin-right: 10px;" />
@@ -63,7 +63,7 @@
                   <td>R$ {{ (product.price ?? 0).toFixed(2) }}</td>
                   <td>R$ {{ ((product.price ?? 0) * item.quantity).toFixed(2) }}</td>
                   <td>
-                    <button class="btn btn-sm btn-danger" (click)="removeItem(item.productId)">
+                    <button class="btn btn-sm btn-danger" (click)="removeItem(item.id)">
                       <i class="bi bi-trash"></i> Remove
                     </button>
                   </td>

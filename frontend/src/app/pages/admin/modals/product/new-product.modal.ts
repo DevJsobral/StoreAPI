@@ -84,7 +84,7 @@ export class NewProductModalComponent {
 
   private createProduct(imageUrl: string) {
     const newProduct: Product = {
-      productId: 0,
+      id: 0,
       name: this.name.trim(),
       description: this.description || '',
       price: this.price!,

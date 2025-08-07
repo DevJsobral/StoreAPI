@@ -51,7 +51,7 @@ export class Products implements OnInit {
 
   loadProducts(): void {
     const trimmedSearch = this.searchName.trim();
-    const category = this.categories.find(cat => cat.categoryId === this.selectedCategoryId);
+    const category = this.categories.find(cat => cat.id === this.selectedCategoryId);
 
     if (category) {
       this.selectedCategoryName = category.name;
@@ -60,18 +60,15 @@ export class Products implements OnInit {
       this.selectedCategoryName = 'All Products';
       this.selectedCategoryImage = 'https://i.ibb.co/Sw1Npj18/All-Products.jpg';
     }
-
     this.productsService.getAll(trimmedSearch, this.selectedCategoryId)
       .subscribe({
-        next: (data) => {
-          this.products = data;
-          console.log('Produtos carregados:', this.products);
-        },
-        error: (err) => {
-          console.error('Failed to load products:', err);
-          this.products = [];
-        }
-      });
+            next: (data) => {
+              this.products = data || [];
+            },
+            error: (err) => {
+              this.products = [];
+            }
+          });
   }
 
   loadCategories(): void {
@@ -80,10 +77,10 @@ export class Products implements OnInit {
   }
 
   openImage(url: string): void {
-  this.modalImageUrl = url;
-  const modal = new bootstrap.Modal(document.getElementById('imageModal')!);
-  modal.show();
-}
+    this.modalImageUrl = url;
+    const modal = new bootstrap.Modal(document.getElementById('imageModal')!);
+    modal.show();
+  }
 
   filteredProducts: Product[] = [];
   searchTerm: string = '';
@@ -119,7 +116,7 @@ export class Products implements OnInit {
     if (!this.selectedCategory) {
       return 'All Products';
     }
-    const cat = this.categories.find(c => c.categoryId == this.selectedCategory);
+    const cat = this.categories.find(c => c.id == this.selectedCategory);
     return cat ? cat.name : 'All Products';
   }
 
@@ -154,12 +151,12 @@ export class Products implements OnInit {
         const stored = localStorage.getItem('cart');
         const cart: OrderItem[] = stored ? JSON.parse(stored) : [];
 
-        const existing = cart.find(item => item.productId === this.selectedProduct!.productId);
+        const existing = cart.find(item => item.id === this.selectedProduct!.id);
 
         if (existing) {
           existing.quantity += 1;
         } else {
-          cart.push({ productId: this.selectedProduct.productId, quantity: 1 });
+          cart.push({ id: this.selectedProduct.id, quantity: 1 });
         }
 
         localStorage.setItem('cart', JSON.stringify(cart));

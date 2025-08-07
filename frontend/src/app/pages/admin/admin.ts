@@ -91,12 +91,12 @@ export class AdminComponent implements OnInit {
   }
 
   getProductName(productId: number): string {
-    const product = this.products.find((p) => p.productId === productId);
+    const product = this.products.find((p) => p.id === productId);
     return product ? product.name : 'Unknown Product';
   }
 
   getCategoryName(categoryId: number | string): string {
-    const cat = this.categories.find((c) => c.categoryId === +categoryId);
+    const cat = this.categories.find((c) => c.id === +categoryId);
     return cat ? cat.name : 'Unknown';
   }
 
@@ -122,7 +122,7 @@ export class AdminComponent implements OnInit {
   }
 
   onProductSaved(updatedProduct: Product) {
-    const index = this.products.findIndex(p => p.productId === updatedProduct.productId);
+    const index = this.products.findIndex(p => p.id === updatedProduct.id);
     if (index !== -1) {
       this.products[index] = updatedProduct;
     }
@@ -139,7 +139,7 @@ export class AdminComponent implements OnInit {
   }
 
   onProductPatched(updated: Product) {
-    const index = this.products.findIndex(p => p.productId === updated.productId);
+    const index = this.products.findIndex(p => p.id === updated.id);
     if (index !== -1) {
       this.products[index] = updated;
     }
@@ -192,7 +192,7 @@ export class AdminComponent implements OnInit {
     if (confirm('Are you sure you want to delete this product?')) {
       this.productsService.delete(id).subscribe({
         next: () => {
-          this.products = this.products.filter((p) => p.productId !== id);
+          this.products = this.products.filter((p) => p.id !== id);
         },
         error: (err) => {
           console.error('Error deleting product', err);
@@ -206,7 +206,7 @@ export class AdminComponent implements OnInit {
     if (confirm('Are you sure you want to delete this category?')) {
       this.categoriesService.delete(id).subscribe({
         next: () => {
-          this.categories = this.categories.filter((c) => c.categoryId !== id);
+          this.categories = this.categories.filter((c) => c.id !== id);
         },
         error: (err) => {
           console.error('Error deleting category', err);
@@ -220,7 +220,7 @@ export class AdminComponent implements OnInit {
     if (confirm('Are you sure you want to delete this order?')) {
       this.ordersService.delete(id).subscribe({
         next: () => {
-          this.orders = this.orders.filter((o) => o.orderId !== id);
+          this.orders = this.orders.filter((o) => o.id !== id);
         },
         error: (err) => {
           console.error('Error deleting order', err);

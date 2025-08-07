@@ -1,12 +1,10 @@
 import { OrdersService, OrderItem } from '../../services/orders.service';
 import { InfoModalComponent } from '../info-modal/info-modal';
-import { Component, OnInit, signal, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, signal, ViewEncapsulation, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ProductsService, Product } from '../../services/products.service';
-import { ViewChild } from '@angular/core';
-
 
 @Component({
   selector: 'app-cart',
@@ -16,12 +14,10 @@ import { ViewChild } from '@angular/core';
   styleUrls: ['./cart.css'],
   encapsulation: ViewEncapsulation.None
 })
-
 export class Cart implements OnInit {
   @ViewChild('infoModal') infoModal!: InfoModalComponent;
   cartItems: OrderItem[] = [];
   productsMap: Map<number, Product> = new Map();
-
   total = signal(0);
 
   constructor(
@@ -39,10 +35,10 @@ export class Cart implements OnInit {
     this.cartItems = cartJson ? JSON.parse(cartJson) : [];
 
     if (this.cartItems.length > 0) {
-      const productIds = this.cartItems.map(item => item.productId);
+      const productIds = this.cartItems.map(item => item.id);
       this.productsService.getAll().subscribe(products => {
         products.forEach(p => {
-          if (productIds.includes(p.productId)) this.productsMap.set(p.productId, p);
+          if (productIds.includes(p.id)) this.productsMap.set(p.id, p);
         });
         this.updateTotal();
       });
@@ -55,10 +51,8 @@ export class Cart implements OnInit {
   updateTotal() {
     let sum = 0;
     this.cartItems.forEach(item => {
-      const product = this.productsMap.get(item.productId);
-      if (product) {
-        sum += (product.price * item.quantity);
-      }
+      const product = this.productsMap.get(item.id);
+      if (product) sum += product.price * item.quantity;
     });
     this.total.set(sum);
   }
@@ -68,9 +62,9 @@ export class Cart implements OnInit {
     const qty = input.valueAsNumber;
 
     if (qty <= 0) {
-      this.removeItem(item.productId);
+      this.removeItem(item.id);
     } else {
-      const found = this.cartItems.find(ci => ci.productId === item.productId);
+      const found = this.cartItems.find(ci => ci.id === item.id);
       if (found) {
         found.quantity = qty;
         this.saveCart();
@@ -80,7 +74,7 @@ export class Cart implements OnInit {
   }
 
   removeItem(productId: number) {
-    this.cartItems = this.cartItems.filter(item => item.productId !== productId);
+    this.cartItems = this.cartItems.filter(item => item.id !== productId);
     this.saveCart();
     this.loadCart();
   }
@@ -95,8 +89,12 @@ export class Cart implements OnInit {
       return;
     }
 
+    // ✅ transforma id -> productId
     const orderRequest = {
-      items: this.cartItems
+      items: this.cartItems.map(item => ({
+        productId: item.id,
+        quantity: item.quantity
+      }))
     };
 
     this.ordersService.create(orderRequest).subscribe({

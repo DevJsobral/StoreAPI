@@ -70,7 +70,7 @@ export class EditCategoryModalComponent {
 
   private updateCategory(imageUrl: string) {
     const categoryToUpdate = {
-      categoryId: this.categoryId,
+      id: this.categoryId,
       name: this.name,
       imageURL: imageUrl
     };

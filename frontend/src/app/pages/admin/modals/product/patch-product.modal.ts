@@ -43,7 +43,7 @@ export class PatchProductModalComponent {
     this.updating = true;
 
     this.productsService
-      .patchPriceAndStock(this.product.productId, this.newPrice, this.newStock)
+      .patchPriceAndStock(this.product.id, this.newPrice, this.newStock)
       .subscribe({
         next: (updatedProduct) => {
           this.updating = false;

@@ -69,7 +69,7 @@
             <label for="category" class="form-label">Categories</label>
             <select class="form-select" [(ngModel)]="selectedCategoryId" (change)="loadProducts()">
               <option [ngValue]="undefined">All Products</option>
-              <option *ngFor="let cat of categories" [ngValue]="cat.categoryId">{{ cat.name }}</option>
+              <option *ngFor="let cat of categories" [ngValue]="cat.id">{{ cat.name }}</option>
             </select>
           </div>
           <div class="col-md-4">
@@ -81,7 +81,7 @@
             <button class="btn btn-primary ms-auto" (click)="loadProducts()">Search</button>
           </div>
         </div>
-        <div *ngIf="products.length > 0; else noProducts">
+        <div *ngIf="products && products.length > 0; else noProducts">
           <div class="row">
             <div class="col-md-4 mb-4" *ngFor="let product of products">
               <div class="card shadow-sm h-100">
